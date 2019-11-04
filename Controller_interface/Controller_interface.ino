@@ -11,30 +11,29 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 
-//  Controller Version 0.2
-//  OCTOBER 27 2019
+//  Controller Version 0.3
+//  NOVEMBER 3 2019
 //
 
 //Constants (aka wont change)
-const int left = 4;
-const int leftMiddle = 5;
-const int rightMiddle = 2;
-const int right = 3;
+const int back = 4;
+const int down = 5;
+const int up = 2;
+const int enter = 3;
 
-const int ledPin =  13;
 
 //Variables (aka will change)
-int leftState = 0;
-int  leftMiddleState = 0;
-int  rightMiddleState = 0;
-int  rightState = 0;
+int backState = 0;
+int  downState = 0;
+int  upState = 0;
+int  enterState = 0;
 
 void setup() {
   //Setup Pin Modes
-  pinMode(left, INPUT_PULLUP);
-  pinMode(leftMiddle, INPUT_PULLUP);
-  pinMode(rightMiddle, INPUT_PULLUP);
-  pinMode(right, INPUT_PULLUP);
+  pinMode(back, INPUT_PULLUP);
+  pinMode(down, INPUT_PULLUP);
+  pinMode(up, INPUT_PULLUP);
+  pinMode(enter, INPUT_PULLUP);
 
   Serial.begin(9600);
 
@@ -51,7 +50,7 @@ void setup() {
   display.setCursor(35, 20);
   display.println(F("Controller"));
   display.setCursor(42, 35);
-  display.println(F("Ver. 0.2"));
+  display.println(F("Ver. 0.3"));
   display.drawRect(0,0,128,64,SSD1306_WHITE);
   display.display();      // Show initial text
   delay(2000);
@@ -61,69 +60,42 @@ void setup() {
 
 void loop() {
   //Button States
-  leftState = digitalRead(left);
-  leftMiddleState = digitalRead(leftMiddle);
-  rightMiddleState = digitalRead(rightMiddle);
-  rightState = digitalRead(right);
+  backState = digitalRead(back);
+  downState = digitalRead(down);
+  upState = digitalRead(up);
+  enterState = digitalRead(enter);
 
 
-  if (leftState == LOW){
+  if (backState == LOW){
+      display.clearDisplay();
+
       
-      testdrawtriangle();
       display.display();
     }
-  else if(leftMiddleState == LOW){
-      
-      testdrawroundrect();
-      display.display();
-    }
-  else if(rightMiddleState == LOW){
-      
+  else if(downState == LOW){
+      display.clearDisplay();
       testdrawstyles();
       display.display();
     }
-  else if(rightState == LOW){
+  else if(upState == LOW){
+       display.clearDisplay();
       
-      testdrawchar();
+      display.display();
+    }
+  else if(enterState == LOW){
+      display.clearDisplay();
+      
       display.display();
     }
   else {
       display.clearDisplay();
       
       display.setTextSize(1);             // Normal 1:1 pixel scale
-      display.setTextColor(SSD1306_WHITE);        // Draw white text
-      display.setCursor(25,32);             // Start at top-left corner
-      display.println(F("Press a Button"));
+      display.setTextColor(SSD1306_BLACK,SSD1306_WHITE);        // Draw white text
+      display.setCursor(0,0);             // Start at top-left corner
+      display.println(F("Motor Direction"));
       display.display();
     } 
-}
-
-void testdrawtriangle(void) {
-  display.clearDisplay();
-
-  for(int16_t i=0; i<max(display.width(),display.height())/2; i+=5) {
-    display.drawTriangle(
-      display.width()/2  , display.height()/2-i,
-      display.width()/2-i, display.height()/2+i,
-      display.width()/2+i, display.height()/2+i, SSD1306_WHITE);
-    display.display();
-    delay(1);
-  }
-
-  delay(2000);
-}
-
-void testdrawroundrect(void) {
-  display.clearDisplay();
-
-  for(int16_t i=0; i<display.height()/2-2; i+=2) {
-    display.drawRoundRect(i, i, display.width()-2*i, display.height()-2*i,
-      display.height()/4, SSD1306_WHITE);
-    display.display();
-    delay(1);
-  }
-
-  delay(2000);
 }
 
 void testdrawstyles(void) {
@@ -142,21 +114,5 @@ void testdrawstyles(void) {
   display.print(F("0x")); display.println(0xDEADBEEF, HEX);
 
   display.display();
-  delay(2000);
-}
-
-void testdrawchar(void) {
-  display.clearDisplay();
-
-  display.setTextSize(1);      // Normal 1:1 pixel scale
-  display.setTextColor(SSD1306_WHITE); // Draw white text
-  display.setCursor(0, 0);     // Start at top-left corner
-  display.cp437(true);         // Use full 256 char 'Code Page 437' font
-
-  // Not all the characters will fit on the display. This is normal.
-  // Library will draw what it can and the rest will be clipped.
-  for(int16_t i=0; i<256; i++) {
-    if(i == '\n') display.write(' ');
-    else          display.write(i);
-  }
+  delay(4000);
 }
