@@ -96,13 +96,13 @@ void loop() {
     if (page == max_page) {
       if (pointer_y < 52) {
         pointer_y += 12;
-        delay(150);
+        delay(100);
       }
     }
     else {
       if (pointer_y < 64) {
         pointer_y += 12;
-        delay(150);
+        delay(100);
       }
     }
     if (pointer_y == 64) {
