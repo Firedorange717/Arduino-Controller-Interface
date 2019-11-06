@@ -50,11 +50,11 @@ void setup() {
   Serial.begin(9600);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x64
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x64
     Serial.println(F("SSD1306 allocation failed"));
-    for(;;); // Don't proceed, loop forever
+    for (;;); // Don't proceed, loop forever
   }
-  
+
   display.clearDisplay();
 
   display.setTextSize(1); // Draw 2X-scale text
@@ -63,11 +63,11 @@ void setup() {
   display.println(F("Controller"));
   display.setCursor(42, 35);
   display.println(F("Ver. 0.3"));
-  display.drawRect(0,0,128,64,SSD1306_WHITE);
+  display.drawRect(0, 0, 128, 64, SSD1306_WHITE);
   display.display();      // Show initial text
   delay(1000);
 
-  
+
 }
 
 void loop() {
@@ -77,144 +77,129 @@ void loop() {
   upState = digitalRead(up);
   enterState = digitalRead(enter);
 
-//Display correct page
-  if (page == 0){
-      page_0();
-    } 
-  else if (page == 1){
-      page_1();
-    }
+  //Display correct page
+  if (page == 0) {
+    page_0();
+  }
+  else if (page == 1) {
+    page_1();
+  }
 
-//Check for button presses
-  if (backState == LOW){
+  //*******Back Button press*******
+  if (backState == LOW) {
+    display.display();
+  }
 
-      
-      display.display();
-    }
-  else if(downState == LOW){
-    Serial.print(pointer_y);
-    Serial.print("\n");
-    Serial.print(page);
-    Serial.print("\n");
-    
+  //*******Down Button press*******
+  else if (downState == LOW) {
     //Moves Pointer down
-    if(page == max_page){
-      if (pointer_y < 52){
-          pointer_y += 12;
-          delay(150);
-        }
+    if (page == max_page) {
+      if (pointer_y < 52) {
+        pointer_y += 12;
+        delay(150);
       }
-    else{
-      if (pointer_y < 64){
-          pointer_y += 12;
-          delay(150);
-        }
-      }
-        
-        if(pointer_y == 64){
-          if(page != max_page){
-             page += 1;
-             pointer_y = 16;
-          }
-        }
-        
-      
-      display.display();
     }
-  else if(upState == LOW){
-    Serial.print(pointer_y);
-    Serial.print("\n");
-    Serial.print(page);
-    Serial.print("\n");
-    
-    
+    else {
+      if (pointer_y < 64) {
+        pointer_y += 12;
+        delay(150);
+      }
+    }
+    if (pointer_y == 64) {
+      if (page != max_page) {
+        page += 1;
+        pointer_y = 16;
+      }
+    }
+    display.display();
+  }
+
+  //******Up Button press*******
+  else if (upState == LOW) {
     //Moves Pointer up
-        if (pointer_y != 16 || page != 0){
-           if (pointer_y > 2){
-               pointer_y -= 12;
-               delay(150);
-            }
-        }
-        
-       if(pointer_y == 4 && page > 0){
-          page -= 1;
-          pointer_y = 52;
-        }
-      
-      display.display();
+    if (pointer_y != 16 || page != 0) {
+      if (pointer_y > 2) {
+        pointer_y -= 12;
+        delay(150);
+      }
     }
-    
-  //enterState == LOW
-  else if (enterState == LOW){
-      
-      display.display();
+    if (pointer_y == 4 && page > 0) {
+      page -= 1;
+      pointer_y = 52;
     }
+    display.display();
+  }
+
+  //*******Enter Button press********
+  else if (enterState == LOW) {
+    display.display();
+  }
 }
 
-void page_0(void){
-      display.clearDisplay();
+void page_0(void) {
+  display.clearDisplay();
 
-        //Draw Pointer
-      display.setCursor(pointer_x, pointer_y);
-      display.println("->");
+  //Draw Pointer
+  display.setCursor(pointer_x, pointer_y);
+  display.println("->");
 
-      //Page Number
-      display.setCursor(92,0);
-      display.println("Page 0");
-      
-      //Header
-      display.setTextSize(1);             // Normal 1:1 pixel scale
-      display.setTextColor(SSD1306_BLACK,SSD1306_WHITE);  //Inverts text color  
-      display.setCursor(20,0);            
-      display.println(F("MAIN MENU"));
+  //Page Number
+  display.setCursor(92, 0);
+  display.println("Page 0");
 
-      //Divider
-      display.drawLine(0,11, 128, 11, SSD1306_WHITE);
+  //Header
+  display.setTextSize(1);             // Normal 1:1 pixel scale
+  display.setTextColor(SSD1306_BLACK, SSD1306_WHITE); //Inverts text color
+  display.setCursor(20, 0);
+  display.println(F("MAIN MENU"));
 
-      //Menu Contents
-      display.setTextColor(SSD1306_WHITE);
-      display.setCursor(25,16); 
-      display.println(F("Item #1"));
-      display.setCursor(25,28); 
-      display.println(F("Item #2"));
-      display.setCursor(25,40); 
-      display.println(F("Item #3"));
-      display.setCursor(25,52); 
-      display.println(F("Item #4"));
-      display.display();
-  
-  }
+  //Divider
+  display.drawLine(0, 11, 128, 11, SSD1306_WHITE);
 
-void page_1(void){
-      display.clearDisplay();
+  //Menu Contents
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(25, 16);
+  display.println(F("Item #1"));
+  display.setCursor(25, 28);
+  display.println(F("Item #2"));
+  display.setCursor(25, 40);
+  display.println(F("Item #3"));
+  display.setCursor(25, 52);
+  display.println(F("Item #4"));
+  display.display();
 
-        //Draw Pointer
-      display.setCursor(pointer_x, pointer_y);
-      display.println("->");
+}
 
-      //Page Number
-      display.setCursor(92,0);
-      display.println("Page 1");
-      
-      //Header
-      display.setTextSize(1);             // Normal 1:1 pixel scale
-      display.setTextColor(SSD1306_BLACK,SSD1306_WHITE);  //Inverts text color  
-      display.setCursor(20,0);            
-      display.println(F("MAIN MENU"));
+void page_1(void) {
+  display.clearDisplay();
 
-      //Divider
-      display.drawLine(0,11, 128,11,SSD1306_WHITE);
+  //Draw Pointer
+  display.setCursor(pointer_x, pointer_y);
+  display.println("->");
 
-      //Menu Contents
-      display.setTextColor(SSD1306_WHITE);
-      display.setCursor(25,16); 
-      display.println(F("Item #5"));
-      display.setCursor(25,28); 
-      display.println(F("Item #6"));
-      display.setCursor(25,40); 
-      display.println(F("Item #7"));
-      display.setCursor(25,52); 
-      display.println(F("Item #8"));
-      display.display();
-  
-  }
+  //Page Number
+  display.setCursor(92, 0);
+  display.println("Page 1");
+
+  //Header
+  display.setTextSize(1);             // Normal 1:1 pixel scale
+  display.setTextColor(SSD1306_BLACK, SSD1306_WHITE); //Inverts text color
+  display.setCursor(20, 0);
+  display.println(F("MAIN MENU"));
+
+  //Divider
+  display.drawLine(0, 11, 128, 11, SSD1306_WHITE);
+
+  //Menu Contents
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(25, 16);
+  display.println(F("Item #5"));
+  display.setCursor(25, 28);
+  display.println(F("Item #6"));
+  display.setCursor(25, 40);
+  display.println(F("Item #7"));
+  display.setCursor(25, 52);
+  display.println(F("Item #8"));
+  display.display();
+
+}
