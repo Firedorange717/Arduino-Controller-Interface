@@ -31,8 +31,8 @@ int  upState = 0;
 int  enterState = 0;
 
 //Page number
-int page = 0;
-int max_page = 1;
+int page = 1;
+int max_page = 2;
 
 //Pointer location
 int pointer_x = 5;
@@ -78,11 +78,11 @@ void loop() {
   enterState = digitalRead(enter);
 
   //Display correct page
-  if (page == 0) {
-    page_0();
-  }
-  else if (page == 1) {
+  if (page == 1) {
     page_1();
+  }
+  else if (page == 2) {
+    page_2();
   }
 
   //*******Back Button press*******
@@ -96,13 +96,13 @@ void loop() {
     if (page == max_page) {
       if (pointer_y < 52) {
         pointer_y += 12;
-        delay(100);
+        delay(150);
       }
     }
     else {
       if (pointer_y < 64) {
         pointer_y += 12;
-        delay(100);
+        delay(150);
       }
     }
     if (pointer_y == 64) {
@@ -115,15 +115,15 @@ void loop() {
   }
 
   //******Up Button press*******
-  else if (upState == LOW) {
+  else if (upState == LOW) {   
     //Moves Pointer up
-    if (pointer_y != 16 || page != 0) {
+    if (pointer_y != 16 || page != 1) {
       if (pointer_y > 2) {
         pointer_y -= 12;
-        delay(150);
+        delay(100);
       }
     }
-    if (pointer_y == 4 && page > 0) {
+    if (pointer_y == 4 && page > 1) {
       page -= 1;
       pointer_y = 52;
     }
@@ -136,7 +136,7 @@ void loop() {
   }
 }
 
-void page_0(void) {
+void page_1(void) {
   display.clearDisplay();
 
   //Draw Pointer
@@ -145,7 +145,7 @@ void page_0(void) {
 
   //Page Number
   display.setCursor(92, 0);
-  display.println("Page 0");
+  display.println("Page 1");
 
   //Header
   display.setTextSize(1);             // Normal 1:1 pixel scale
@@ -170,7 +170,7 @@ void page_0(void) {
 
 }
 
-void page_1(void) {
+void page_2(void) {
   display.clearDisplay();
 
   //Draw Pointer
@@ -179,7 +179,7 @@ void page_1(void) {
 
   //Page Number
   display.setCursor(92, 0);
-  display.println("Page 1");
+  display.println("Page 2");
 
   //Header
   display.setTextSize(1);             // Normal 1:1 pixel scale
